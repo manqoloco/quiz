@@ -1,16 +1,13 @@
 function myFunction() {
-    let element = document.body;
-    element.classList.toggle("dark-mode");
-  }
-  
-  
-  const QueryType = {
+  let element = document.body;
+  element.classList.toggle("dark-mode");
+}
+
+const QueryType = {
   TrueFalse: 0,
   Multiple: 1,
   Checkboxes: 2,
 };
-
-
 
 let myArray = [
   {
@@ -30,14 +27,37 @@ let myArray = [
     answers: ["Gothenburg", "Stockholm"],
     type: QueryType.Checkboxes,
   },
+  {
+    question: "do cows really exist?",
+    answer: true,
+    type: QueryType.TrueFalse,
+  },
   /* {
+    question: "is Halloween in September?",
+    answer: false,
+    type: QueryType.TrueFalse
+  }
+  
+  {
+    question: "how many siblings do I have?"
+    choices: ["1","2","3","4"],
+    answer: "3",
+    type: QueryType.Multiple
+  },
+  {
     question: "do cows really exist?",
     answer: true,
   },
   {
     question: "is Halloween in September?",
     answer: false,
-  },
+  },*/
+  /* {
+    question: "which ones are capitals?"
+    choices: ["Florence","Lima","Canberra","Houston"]
+    answers:
+    type:
+  }
   {
     question: "does 2+2 = 4?",
     answer: true,
@@ -73,18 +93,31 @@ let showResBtn = document.querySelector("#showResults");
 
 showResBtn.addEventListener("click", () => {
   let result = 0;
+  let fs = document.querySelectorAll("fieldset");
   for (let i = 0; i < myArray.length; i++) {
-    let answer = document.querySelector(`[name='input${i}']:checked`);
-    if (!answer) {
-      console.log("try again");
-      return;
-    }
-    let a = answer.value === "true";
-    console.log(a);
-    if (myArray[i].answer == a) {
-      result++;
+    switch (myArray[i].type) {
+      case QueryType.TrueFalse:
+        let answer = fs[i].querySelector(`[name='input${i}']:checked`);
+        if (!answer) {
+          console.log("try again");
+          return;
+        }
+        let a = answer.value === "true";
+        console.log(a);
+        if (myArray[i].answer == a) {
+          result++;
+        }
+        break;
+
+      case QueryType.Multiple:
+        console.log("now in Multiple");
+        break;
+      case QueryType.Checkboxes:
+        console.log("now in Checkboxes");
     }
   }
+
+  // document.querySelectorAll("fieldset")[0].querySelector(`[name="input${0}"]:checked`)
 
   console.log(result);
   let x = document.querySelector("#result");
@@ -111,7 +144,7 @@ let result = myArray
         <label>true</label>
         <input value="true" name="input${index}" type="radio"/>
         <label>false</label>
-        <input value="false" name="input${index++}" type="radio"/>
+        <input value="false" name="input${index}" type="radio"/>
 
         </fieldset>`;
     } else if (x.type == QueryType.Multiple) {
@@ -125,15 +158,12 @@ let result = myArray
           <legend>${x.question}</legend>
           <select id="${index}">
           ${options}
-        </select>
-
-
-  
+            </select>
           </fieldset>`;
     } else if (x.type == QueryType.Checkboxes) {
       let boxes = x.choices
         .map((b) => {
-          return `<input type="checkbox" id="${index}"></input> `;
+          return `<input type="checkbox" value="${b}">${b}</input> `;
         })
         .join("");
       return ` 
@@ -142,6 +172,7 @@ let result = myArray
        ${boxes}
        </fieldset>`;
     }
+    index++
   })
   .join("");
 let questions = document.querySelector("#questions");
