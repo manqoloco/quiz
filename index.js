@@ -110,10 +110,41 @@ showResBtn.addEventListener("click", () => {
         break;
 
       case QueryType.Multiple:
-        console.log("now in Multiple");
+       let value = fs[i].querySelector("select").value;
+       if(myArray[i].answer == value){
+        result++;
+       }
         break;
       case QueryType.Checkboxes:
-        console.log("now in Checkboxes");
+        let inputs = fs[i].querySelectorAll("input");
+        let checkedA = [];
+        inputs.forEach(x => {
+            /* if (x.checked){
+                checkedA.push(x.value);
+            }*/
+            if (myArray[i].answers.length == checkedA[i].length){
+                console.log("hej");
+            }
+            
+        })
+        console.log(checkedA);
+        console.log(myArray[i].answers);
+        console.log(inputs);
+        /* 
+        get checkbox values, value from checked checkboxes
+        compare to correct answer, myArray answers
+        loopa igenom, hitta alla checkboxes i fieldset, hämta fieldset igen
+        sen fråga efter alla queryselector på alla input element
+fs[i].querySelectorAll("input")[0].checked
+rad 100
+inputs.forEach?
+kolla om inputs e checkade
+checka om den ingår i rätt svar, och checka att alla rätta svar ingår i den
+alla rätta svar i array i answers
+jämför två arrayer
+bygga upp en array
+jämför checkedA och myArray
+        */
     }
   }
 
@@ -137,43 +168,36 @@ showResBtn.addEventListener("click", () => {
 let index = 0;
 let result = myArray
   .map((x) => {
+    let output = `<fieldset><legend>${x.question}</legend>`;
     if (x.type == QueryType.TrueFalse) {
-      return `
-        <fieldset> 
-        <legend>${x.question}</legend>
+      output += `
         <label>true</label>
         <input value="true" name="input${index}" type="radio"/>
         <label>false</label>
-        <input value="false" name="input${index}" type="radio"/>
-
-        </fieldset>`;
+        <input value="false" name="input${index}" type="radio"/>`;
     } else if (x.type == QueryType.Multiple) {
       let options = x.choices
         .map((c) => {
           return `<option value="${c}">${c}</option>`;
         })
         .join("");
-      return `
-          <fieldset> 
-          <legend>${x.question}</legend>
+      output += `
           <select id="${index}">
           ${options}
-            </select>
-          </fieldset>`;
+          </select>`;
     } else if (x.type == QueryType.Checkboxes) {
       let boxes = x.choices
         .map((b) => {
           return `<input type="checkbox" value="${b}">${b}</input> `;
         })
         .join("");
-      return ` 
-       <fieldset>
-       <legend>${x.question}</legend>
-       ${boxes}
-       </fieldset>`;
+      output += `${boxes}`;
     }
+    output +=   `</fieldset>`;
     index++
+    return output;
   })
   .join("");
+  
 let questions = document.querySelector("#questions");
 questions.innerHTML = result;
