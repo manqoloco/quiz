@@ -32,14 +32,14 @@ let myArray = [
     answer: true,
     type: QueryType.TrueFalse,
   },
-  /* {
+   {
     question: "is Halloween in September?",
     answer: false,
     type: QueryType.TrueFalse
-  }
+  },
   
   {
-    question: "how many siblings do I have?"
+    question: "how many siblings do I have?",
     choices: ["1","2","3","4"],
     answer: "3",
     type: QueryType.Multiple
@@ -47,46 +47,55 @@ let myArray = [
   {
     question: "do cows really exist?",
     answer: true,
+    type: QueryType.TrueFalse
   },
   {
     question: "is Halloween in September?",
     answer: false,
-  },*/
-  /* {
-    question: "which ones are capitals?"
-    choices: ["Florence","Lima","Canberra","Houston"]
-    answers:
-    type:
-  }
+    type: QueryType.TrueFalse
+  },
+  {
+    question: "which ones are capitals?",
+    choices: ["Florence","Lima","Canberra","Houston"],
+    answers: ["Lima","Canberra"],
+    type: QueryType.Checkboxes
+  },
   {
     question: "does 2+2 = 4?",
     answer: true,
+    type: QueryType.TrueFalse
   },
   {
     question: "is Gothenburg the capital of Sweden?",
     answer: false,
+    type: QueryType.TrueFalse
   },
   {
     question: "is Sweden's flag yellow and blue?",
     answer: true,
+    type: QueryType.TrueFalse
   },
   {
     question: "is norwegian the official language in Sweden?",
     answer: false,
+    type: QueryType.TrueFalse
   },
   {
     question: "do cats usually have 6 legs?",
     answer: false,
+    type: QueryType.TrueFalse
   },
   {
     question: "do carnivores eat meat?",
     answer: true,
+    type: QueryType.TrueFalse
   },
 
   {
     question: "do cats have 9 lives?",
     answer: false,
-  }, */
+    type: QueryType.TrueFalse
+  }
 ];
 
 let showResBtn = document.querySelector("#showResults");
@@ -95,6 +104,8 @@ showResBtn.addEventListener("click", () => {
   let result = 0;
   let fs = document.querySelectorAll("fieldset");
   for (let i = 0; i < myArray.length; i++) {
+    let legend = fs[i].querySelector("legend");
+    let correct = false;
     switch (myArray[i].type) {
       case QueryType.TrueFalse:
         let answer = fs[i].querySelector(`[name='input${i}']:checked`);
@@ -106,6 +117,7 @@ showResBtn.addEventListener("click", () => {
         console.log(a);
         if (myArray[i].answer == a) {
           result++;
+          correct = true; 
         }
         break;
 
@@ -113,38 +125,34 @@ showResBtn.addEventListener("click", () => {
        let value = fs[i].querySelector("select").value;
        if(myArray[i].answer == value){
         result++;
+        correct = true;
        }
+      
         break;
       case QueryType.Checkboxes:
         let inputs = fs[i].querySelectorAll("input");
         let checkedA = [];
+        const correctAnswers = myArray[i].answers.sort();
         inputs.forEach(x => {
-            /* if (x.checked){
+            if (x.checked){
                 checkedA.push(x.value);
-            }*/
-            if (myArray[i].answers.length == checkedA[i].length){
-                console.log("hej");
+            }
+        });
+        if (correctAnswers.length == checkedA.length){
+            if(checkedA.sort().every((value, index) => {return value === correctAnswers[index]}))
+            {
+                result++
+                correct = true;
             }
             
-        })
-        console.log(checkedA);
-        console.log(myArray[i].answers);
-        console.log(inputs);
-        /* 
-        get checkbox values, value from checked checkboxes
-        compare to correct answer, myArray answers
-        loopa igenom, hitta alla checkboxes i fieldset, hämta fieldset igen
-        sen fråga efter alla queryselector på alla input element
-fs[i].querySelectorAll("input")[0].checked
-rad 100
-inputs.forEach?
-kolla om inputs e checkade
-checka om den ingår i rätt svar, och checka att alla rätta svar ingår i den
-alla rätta svar i array i answers
-jämför två arrayer
-bygga upp en array
-jämför checkedA och myArray
-        */
+        }
+        
+    }
+    if (correct){
+        legend.style.color = "green"
+    }
+    else {
+        legend.style.color = "red"
     }
   }
 
